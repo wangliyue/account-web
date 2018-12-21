@@ -54,8 +54,45 @@
         </dependency>
     </dependencies>
 
+    <!-- 为不同的环境配置jdbc连接 -->
+    <profiles>
+        <profile>
+            <id>jdbc_dev</id>
+            <properties>
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.url>jdbc:mysql://192.168.20.1:3306/dev_db</db.url>
+                <db.username>dev</db.username>
+                <db.password>123456</db.password>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdbc_test</id>
+            <properties>
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.url>dbc:mysql://192.168.20.1:3306/test_db</db.url>
+                <db.username>test</db.username>
+                <db.password>test123456</db.password>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdbc_realease</id>
+            <properties>
+                <db.driver></db.driver>
+                <db.url></db.url>
+                <db.username></db.username>
+                <db.password></db.password>
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <finalName>account-web</finalName>
+        <!-- 为资源目录开启过滤，应用profile配置 -->
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
@@ -83,12 +120,27 @@
                 <plugin>
                     <groupId>org.mortbay.jetty</groupId>
                     <artifactId>jetty-maven-plugin</artifactId>
-                    <version>7.1.0.RC1</version>
+                    <version>8.1.16.v20140903</version>
                     <configuration>
                         <scanIntervalSeconds>10</scanIntervalSeconds>
                         <webAppConfig>
                             <contextPath>/account</contextPath>
                         </webAppConfig>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.cargo</groupId>
+                    <artifactId>cargo-maven2-plugin</artifactId>
+                    <version>1.7.1</version>
+                    <configuration>
+                        <container>
+                            <containerId>tomcat7x</containerId>
+                            <home>D:\WorkProgramFiles\tomcat7</home>
+                        </container>
+                        <configuration>
+                            <type>existing</type>
+                            <home>D:\WorkProgramFiles\tomcat7</home>
+                        </configuration>
                     </configuration>
                 </plugin>
             </plugins>
